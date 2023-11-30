@@ -11,15 +11,14 @@ const UserBox = ({ data }: { data: User }) => {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
-    const handleClick = useCallback(() => {
+    const handleClick = useCallback(async () => {
 
         try {
             setIsLoading(true)
 
-            axios.post('/api/coversations', {
+             await axios.post('/api/conversations', {
                 userId: data.id
             });
-
             router.push(`/conversations/${data.id}`)
         } catch (error) {
 
@@ -37,7 +36,9 @@ const UserBox = ({ data }: { data: User }) => {
             <Avatar user={data} />
             <div className='min-w-0 flex-1'>
                 <div className='focus:outline-none'>
-
+                    <div className='flex justify-between items-center mb-1'>
+                        <p className='text-sm font-medium text-gray-900 capitalize'>{data.name}</p>
+                    </div>
                 </div>
             </div>
         </div>
