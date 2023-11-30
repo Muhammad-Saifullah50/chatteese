@@ -1,21 +1,30 @@
 'use client'
 
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import Input from "./Input"
 import Button from "./Button"
 import AuthSocialButton from "./AuthSocialButton"
 import { BsGithub, BsGoogle } from 'react-icons/bs'
+import axios from "axios"
+import { toast } from "react-hot-toast"
+import { signIn, useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 type Variant = 'LOGIN' | 'REGISTER'
 
 const AuthForm = () => {
+  const session = useSession();
+  const router = useRouter();
 
-  const [variant, setVariant] = useState<Variant>('LOGIN')
+  const [variant, setVariant] = useState<Variant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false)
 
+
   const toggleVariant = useCallback(() => {
-    if (variant === 'LOGIN') { setVariant('REGISTER') }
+    if (variant === 'LOGIN') {
+      setVariant('REGISTER')
+    }
     else {
       setVariant('LOGIN')
     }
@@ -35,22 +44,72 @@ const AuthForm = () => {
   })
 
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+
     setIsLoading(true)
 
     if (variant === 'REGISTER') {
-      // axios register
+      try {
+        await axios.post('/api/register', data);
+        toast.success('Registration successful!');
+        router.push('/users')
+      } catch (error) {
+        toast.error('Something went wrong');
+      } finally {
+        setIsLoading(false);
+      }
     }
-    if (variant === 'REGISTER') {
-      // nextauth signin
+
+
+    if (variant === 'LOGIN') {
+      try {
+        const result = await signIn('credentials', {
+          ...data,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          toast.error('Invalid credentials');
+        }
+
+        if (result?.ok && !result?.error) {
+          toast.success('Logged in successfully');
+          router.push('/users')
+
+        }
+      } catch (error) {
+        toast.error('Something went wrong');
+      } finally {
+        setIsLoading(false);
+      }
     }
+
 
 
   }
-  const socialAction = (action: string) => {
-    setIsLoading(true)
+  const socialAction = async (action: string) => {
+    try {
+      setIsLoading(true)
 
-    //nextauth social signin
+      const result = await signIn(action, {
+        redirect: false,
+         callbackUrl: '/users'
+      })
+
+      if (result?.error) {
+        toast.error('Invalid credentials');
+      }
+
+      if (result?.ok && !result?.error) {
+        toast.success('Logged in successfully');
+      }
+    } catch (error) {
+      toast.error('Something went wrong');
+    } finally {
+      setIsLoading(false);
+    }
+
+
   }
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -77,7 +136,7 @@ const AuthForm = () => {
           />
           <Input
             id='password'
-            label="Passowrd"
+            label="Password"
             type="password"
             register={register}
             errors={errors}
@@ -125,7 +184,7 @@ const AuthForm = () => {
           {variant === 'LOGIN' ? 'New to Chatteese' : 'Already have an account?'}
 
           <div className="underline cursor-pointer" onClick={toggleVariant}>
-{variant === 'LOGIN' ? 'Create an account' : 'Log in'}
+            {variant === 'LOGIN' ? 'Create an account' : 'Log in'}
           </div>
         </div>
       </div>
