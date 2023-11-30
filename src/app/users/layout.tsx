@@ -1,10 +1,16 @@
-import React from 'react'
+import getUsers from "@/actions/getUsers"
+import Sidebar from "@/components/Sidebar"
+import UserList from "@/components/UserList"
 
-const UsersLayout = ({children}: {children: React.ReactNode}) => {
+const UsersLayout = async ({ children }: { children: React.ReactNode }) => {
+  const users = await getUsers()
   return (
-    <div>
-      
-    </div>
+    <Sidebar>
+      <div className='h-full'>
+        <UserList item={users} />
+        {children}
+      </div>
+    </Sidebar>
   )
 }
 
