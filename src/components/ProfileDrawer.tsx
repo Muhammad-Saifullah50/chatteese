@@ -8,8 +8,8 @@ import { format } from "date-fns"
 import { Fragment, useMemo, useState } from "react"
 import { IoClose, IoTrash } from 'react-icons/io5'
 import Avatar from "./Avatar"
-import Modal from "./Modal"
-import ConfirmModal from "./ConfirmModal"
+import Modal from "./modals/Modal"
+import ConfirmModal from "./modals/ConfirmModal"
 
 interface ProfileDrawerProps {
     data: Conversation & {
