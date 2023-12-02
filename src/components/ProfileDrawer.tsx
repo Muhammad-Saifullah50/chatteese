@@ -5,9 +5,11 @@ import { FullConversationType } from "@/types"
 import { Dialog, Transition } from "@headlessui/react"
 import { Conversation, User } from "@prisma/client"
 import { format } from "date-fns"
-import { Fragment, useMemo } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { IoClose, IoTrash } from 'react-icons/io5'
 import Avatar from "./Avatar"
+import Modal from "./Modal"
+import ConfirmModal from "./ConfirmModal"
 
 interface ProfileDrawerProps {
     data: Conversation & {
@@ -19,6 +21,7 @@ interface ProfileDrawerProps {
 const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
 
     const otherUser = useOtherUser(data);
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     const joinedDate = useMemo(() => {
         return format(new Date(otherUser.createdAt), 'PP')
@@ -36,6 +39,11 @@ const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
 
     return (
         <>
+            <ConfirmModal
+                isOpen={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+            />
+               
             <Transition.Root show={isOpen} as={Fragment}>
                 <Dialog as='div' className='z-50' onClose={onClose}>
                     <Transition.Child
@@ -87,9 +95,11 @@ const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
                                                         {statusText}
                                                     </div>
                                                     <div className="flex gap-10 my-8">
-                                                        <div onClick={() => { }} className="flex flex-col gap-3 items-center cursor-pointer hover:opacity-75">
-                                                            <div className="w-10 h-10 bg-neutral-100 rounded-full flex items-center justify-center">
-                                                                <IoTrash size={200} />
+                                                        <div onClick={() => setConfirmOpen(true)} className="flex flex-col gap-3 items-center cursor-pointer hover:opacity-75">
+                                                            <div
+
+                                                                className="w-10 h-10 bg-neutral-100 rounded-full flex items-center justify-center">
+                                                                <IoTrash size={20} />
                                                             </div>
                                                             <div className="text-sm font-light text-neutral-600">
                                                                 Delete
@@ -115,11 +125,11 @@ const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
                                                                     <hr />
                                                                     <div>
                                                                         <dt className="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Joined</dt>
-                                                                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2"> 
-                                                                        <time dateTime={joinedDate}>
-                                                                {joinedDate}
-                                                                        </time>
-                                                                         </dd>
+                                                                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2">
+                                                                            <time dateTime={joinedDate}>
+                                                                                {joinedDate}
+                                                                            </time>
+                                                                        </dd>
                                                                     </div>
                                                                 </>
                                                             )}
