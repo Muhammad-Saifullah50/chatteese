@@ -8,6 +8,7 @@ import { useCallback, useMemo } from "react"
 import Avatar from "./Avatar"
 import clsx from "clsx"
 import { format } from "date-fns"
+import AvatarGroup from "./AvatarGroup"
 
 interface ConversationBoxProps {
     data: FullConversationType
@@ -61,7 +62,12 @@ const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
         <div className={clsx('w-full relative flex items-center space-x-3 hover:bg-neutral-100 rounded-lg transition cursor-pointer p-3',
             selected ? 'bg-neutral-100' : 'bg-white',
         )} onClick={handleClick}>
-            <Avatar user={otherUser} />
+            {data.isGroup ? (
+                <AvatarGroup users={data.users} />
+            ) : (
+                <Avatar user={otherUser} />
+            )}
+
 
             <div className="min-w-0 flex-1">
                 <div className="focus:outline-none ">
@@ -75,8 +81,8 @@ const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
                             </p>
                         )}
                     </div>
-                    <p className={clsx('truncate text-sm ', 
-                    hasSeen ? 'text-gray-500' : 'text-black font-medium'
+                    <p className={clsx('truncate text-sm ',
+                        hasSeen ? 'text-gray-500' : 'text-black font-medium'
                     )}>{lastMessageText}</p>
 
                 </div>

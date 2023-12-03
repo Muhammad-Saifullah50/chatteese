@@ -12,6 +12,7 @@ const ConversationLayout = async ({ children }: { children: React.ReactNode }) =
             <div className='h-full'>
                 <ConversationList
                     users={users}
+                    title={'Messages'}
                     //@ts-expect-error  
                     initalItems={conversations}
                 />
