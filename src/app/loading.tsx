@@ -3,7 +3,7 @@ import { ThreeDots } from 'react-loader-spinner'
 
 const loading = () => {
     return (
-        <div className='lg:pl-80 h-full'>
+        <div className=' h-full'>
             <div className='flex justify-center items-center w-full h-full'>
                 <ThreeDots
                     height="80"
