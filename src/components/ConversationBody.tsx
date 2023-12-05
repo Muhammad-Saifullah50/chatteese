@@ -48,15 +48,22 @@ const ConversationBody = ({ initialMessages }: ConversationBodyProps) => {
         }
         return currentMessage
       }))
-    }
+    };
+
+    const RemoveMessageHandler = (message: FullMessageType) => {
+      setMesssages((current) => [...current.filter((currentMessage) => currentMessage.id !== message.id)])
+    };
 
     pusherClient.bind('messages:new', messageHandler);
     pusherClient.bind('messages:update', UpdateMessageHandler);
+    pusherClient.bind('messages:remove', RemoveMessageHandler);
 
     return () => {
       pusherClient.unsubscribe(conversationId);
       pusherClient.unbind('messages:new', messageHandler);
       pusherClient.unbind('messages:update', UpdateMessageHandler);
+      pusherClient.unbind('messages:remove', RemoveMessageHandler);
+
     };
   }, [conversationId])
   return (

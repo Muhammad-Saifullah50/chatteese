@@ -13,8 +13,10 @@ import Button from "../Button";
 interface ConfirmModalProps {
     isOpen?: boolean;
     onClose: () => void
+    variant: 'conversation' | 'message'
+    messageId?: string
 }
-const ConfirmModal = ({ isOpen, onClose }: ConfirmModalProps) => {
+const ConfirmModal = ({ isOpen, onClose, variant, messageId }: ConfirmModalProps) => {
     const router = useRouter();
     const { conversationId } = useConversation();
     const [loading, setLoading] = useState(false);
@@ -22,18 +24,32 @@ const ConfirmModal = ({ isOpen, onClose }: ConfirmModalProps) => {
     const onDelete = useCallback(async () => {
         try {
             setLoading(true)
-            await axios.delete(`/api/conversations/${conversationId}`)
+
+            if (variant === 'conversation') {
+                await axios.delete(`/api/conversations/${conversationId}`)
+                onClose()
+                toast.success('Conversation Deleted')
+                router.push('/conversations')
+                router.refresh()
+            }
+
+            await axios.delete(`/api/messages`, {
+                data: {
+                    messageId: messageId,
+                    conversationId: conversationId
+
+                }
+            });
             onClose()
-            toast.success('Conversation Deleted')
-            router.push('/conversations')
-            router.refresh()
+            toast.success('Message Deleted')
+
         } catch (error: any) {
             toast.error('Something went wrong')
             console.log(error?.message)
         } finally {
             setLoading(false)
         }
-    }, [conversationId, router, onClose])
+    }, [conversationId,messageId, router, onClose])
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <div className="sm:flex sm:items-start">
@@ -46,10 +62,10 @@ const ConfirmModal = ({ isOpen, onClose }: ConfirmModalProps) => {
                         as='h3'
                         className={'text-base font-semibold leading-6 text-gray-900'}
                     >
-                        Delete Conversation
+                        Delete {variant === 'conversation' ? 'Conversation' : 'Message'}
                     </Dialog.Title>
                     <div className="mt-2 ">
-                        <p className="text-sm text-gray-500"> Are you sure you want to delete this conversation? This action cannot be undone</p>
+                        <p className="text-sm text-gray-500"> Are you sure you want to delete this {variant === 'conversation' ? 'conversation' : 'message'}? This action cannot be undone</p>
                     </div>
                 </div>
             </div>

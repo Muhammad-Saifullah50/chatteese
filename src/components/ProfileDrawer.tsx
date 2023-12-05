@@ -22,6 +22,7 @@ const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
 
     const otherUser = useOtherUser(data);
     const [confirmOpen, setConfirmOpen] = useState(false);
+    
 
     const joinedDate = useMemo(() => {
         return format(new Date(otherUser.createdAt), 'PP')
@@ -34,14 +35,15 @@ const ProfileDrawer = ({ data, isOpen, onClose }: ProfileDrawerProps) => {
     const statusText = useMemo(() => {
         if (data.isGroup) return ` ${data.users.length} members`
 
-        return 'Active'
-    }, [data])
+        return ''
+    }, [data]);
 
     return (
         <>
             <ConfirmModal
                 isOpen={confirmOpen}
                 onClose={() => setConfirmOpen(false)}
+                variant='conversation'
             />
 
             <Transition.Root show={isOpen} as={Fragment}>

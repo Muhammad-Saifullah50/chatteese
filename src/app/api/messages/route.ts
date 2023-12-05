@@ -80,3 +80,31 @@ export const POST = async (request: NextRequest) => {
         return NextResponse.json('Failed to post message', { status: 500 })
     }
 }
+
+export const DELETE = async (request: NextRequest) => {
+    const body = await request.json();
+    const currentUser = await getCurrentUser();
+
+    const { messageId, conversationId } = body
+
+    if (!currentUser?.id || !currentUser?.email) {
+        return NextResponse.json('Unauthorized', { status: 401 })
+    };
+
+    try {
+        const deletedMessage = await prisma.message.delete({
+            where: {
+                id: messageId
+            }
+        });
+
+        await pusherServer.trigger(conversationId, 'messages:remove', deletedMessage);
+
+
+        return NextResponse.json(deletedMessage, { status: 200 })
+    } catch (error: any) {
+        console.error(error, 'error')
+        return NextResponse.json('Failed to delete message', { status: 500 })
+
+    }
+}
