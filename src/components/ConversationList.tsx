@@ -29,7 +29,7 @@ const ConversationList = ({ initalItems, users }: ConversationListProps) => {
 
   useEffect(() => {
     if (!pusherKey) return
-
+    console.log(pusherKey, 'pusherKey');
     pusherClient.subscribe(pusherKey);
 
     const newhandler = (conversation: FullConversationType) => {
