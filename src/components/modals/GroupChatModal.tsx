@@ -10,6 +10,7 @@ import Modal from "./Modal";
 import Input from "../Input";
 import Select from "../Select";
 import Button from "../Button";
+import { TailSpin } from "react-loader-spinner";
 
 interface GroupChatModalProps {
     users: User[];
@@ -100,7 +101,18 @@ const GroupChatModal = ({ isOpen, onClose, users }: GroupChatModalProps) => {
                         disabled={loading}
                         type="submit"
                     >
-                        Create
+                        {loading ? 'Creating' : 'Create'}
+                        {loading && (<TailSpin
+                            height="18"
+                            width="18"
+                            color="#fff"
+                            ariaLabel="tail-spin-loading"
+                            radius="1"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+
+                        />)}
                     </Button>
                 </div>
             </form>

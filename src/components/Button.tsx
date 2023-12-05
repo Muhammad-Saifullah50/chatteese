@@ -1,5 +1,6 @@
 'use client'
 import clsx from "clsx"
+import { TailSpin } from "react-loader-spinner"
 
 interface ButtonProps {
     type?: 'button' | 'submit' | 'reset' | undefined
@@ -18,7 +19,7 @@ const Button = ({
             type={type}
             onClick={onClick}
             disabled={disabled}
-            className={clsx('flex justify-center rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
+            className={clsx('flex gap-2 justify-center rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
                 disabled && 'opacity-50 cursor-default',
                 fullWidth && 'w-full',
                 secondary ? 'text-gray-900' : 'text-white',
@@ -26,6 +27,7 @@ const Button = ({
                 !secondary && !danger && 'bg-sky-500 hover:bg-sky-600 focus-visible:outline-sky-600')}
         >
             {children}
+           
         </button>
     )
 }

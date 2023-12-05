@@ -9,6 +9,7 @@ import Modal from "./Modal";
 import { FiAlertTriangle } from 'react-icons/fi'
 import { Dialog } from "@headlessui/react";
 import Button from "../Button";
+import { TailSpin } from "react-loader-spinner";
 
 interface ConfirmModalProps {
     isOpen?: boolean;
@@ -49,7 +50,7 @@ const ConfirmModal = ({ isOpen, onClose, variant, messageId }: ConfirmModalProps
         } finally {
             setLoading(false)
         }
-    }, [conversationId,messageId, router, onClose])
+    }, [conversationId, messageId, router, onClose])
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <div className="sm:flex sm:items-start">
@@ -75,7 +76,18 @@ const ConfirmModal = ({ isOpen, onClose, variant, messageId }: ConfirmModalProps
                     disabled={loading}
                     danger
                     onClick={onDelete}>
-                    Yes, Delete
+                    {loading ? 'Deleting' : 'Yes, Delete'}
+                    {loading && (<TailSpin
+                        height="18"
+                        width="18"
+                        color="#fff"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+
+                    />)}
                 </Button>
 
                 <Button

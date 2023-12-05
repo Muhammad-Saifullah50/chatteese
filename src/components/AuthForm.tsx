@@ -10,6 +10,7 @@ import axios from "axios"
 import { toast } from "react-hot-toast"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { TailSpin } from "react-loader-spinner"
 
 type Variant = 'LOGIN' | 'REGISTER'
 
@@ -93,7 +94,7 @@ const AuthForm = () => {
 
       const result = await signIn(action, {
         redirect: false,
-         callbackUrl: '/users'
+        callbackUrl: '/users'
       })
 
       if (result?.error) {
@@ -149,8 +150,21 @@ const AuthForm = () => {
               disabled={isLoading}
               fullWidth
               type="submit"
+              
             >
-              {variant === 'LOGIN' ? 'Sign in' : 'Register'}</Button>
+              {variant === 'LOGIN' ? 'Sign in' : 'Register'}
+              {isLoading && (<TailSpin
+                height="18"
+                width="18"
+                color="#fff"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+
+              />)}
+            </Button>
           </div>
         </form>
 

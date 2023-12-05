@@ -6,15 +6,18 @@ import Button from "../Button";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useConversation from "@/hooks/useConversation";
+import { TailSpin } from "react-loader-spinner";
 
 interface MenuModalProps {
     isOpen?: boolean;
     onClose: () => void;
     messageId: string;
-    message: string | null
+    message: string | null;
 }
 const EditModal = ({ isOpen, onClose, messageId, message }: MenuModalProps) => {
     const [loading, setLoading] = useState(false);
+    const { conversationId } = useConversation();
     const {
         register,
         handleSubmit,
@@ -31,15 +34,16 @@ const EditModal = ({ isOpen, onClose, messageId, message }: MenuModalProps) => {
             setLoading(true)
             await axios.patch('/api/messages', {
                 messageId,
-                message: data.message
+                message: data.message,
+                conversationId
             });
             toast.success('Message updated')
             onClose();
         } catch (error: any) {
-            console.error(error?.message)
+            console.log(error?.message)
+            toast.error('Something went wrong')
         } finally {
             setLoading(false);
-            toast.error('Something went wrong')
             onClose();
         }
     }
@@ -70,7 +74,18 @@ const EditModal = ({ isOpen, onClose, messageId, message }: MenuModalProps) => {
                         disabled={loading}
                         type="submit"
                     >
-                        Edit
+                        {loading ? 'Editing' : 'Edit'}
+                        {loading && (<TailSpin
+                            height="18"
+                            width="18"
+                            color="#fff"
+                            ariaLabel="tail-spin-loading"
+                            radius="1"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+
+                        />)}
                     </Button>
                 </div>
             </form>

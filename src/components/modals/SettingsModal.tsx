@@ -11,6 +11,7 @@ import Input from "../Input";
 import Image from "next/image";
 import { CldUploadButton } from "next-cloudinary";
 import Button from "../Button";
+import { TailSpin } from "react-loader-spinner";
 
 interface SettingsModalProps {
     isOpen?: boolean;
@@ -105,7 +106,18 @@ const SettingsModal = ({ isOpen, onClose, currentUser }: SettingsModalProps) => 
                         <Button
                             disabled={loading}
                             type="submit">
-                            Save
+                            {loading ? 'Saving' : 'Save'}
+                            {loading && (<TailSpin
+                                height="18"
+                                width="18"
+                                color="#fff"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+
+                            />)}
                         </Button>
                     </div>
                 </div>

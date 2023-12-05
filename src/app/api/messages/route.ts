@@ -112,4 +112,78 @@ export const DELETE = async (request: NextRequest) => {
 export const PATCH = async (request: NextRequest) => {
     const body = await request.json();
     const currentUser = await getCurrentUser();
+
+    if (!currentUser?.id || !currentUser?.email) {
+        return NextResponse.json('Unauthorized', { status: 401 })
+    };
+
+    try {
+        const { messageId, message, conversationId } = body
+
+        const updatedMessage = await prisma.message.update({
+            where: {
+                id: messageId
+            },
+            data: {
+                body: message,
+                conversation: {
+                    connect: {
+                        id: conversationId
+                    },
+                },
+                sender: {
+                    connect: {
+                        id: currentUser.id
+                    }
+                },
+                seen: {
+                    connect: {
+                        id: currentUser.id
+                    }
+                }
+            },
+            include: {
+                seen: true,
+                sender: true
+            }
+
+        });
+
+        const updatedConversation = await prisma.conversation.update({
+            where: {
+                id: conversationId
+            },
+            data: {
+                lastMessageAt: new Date(),
+                messages: {
+                    connect: {
+                        id: messageId
+                    }
+                }
+            },
+            include: {
+                users: true,
+                messages: {
+                    include: {
+                        seen: true
+                    }
+                }
+            }
+        });
+        await pusherServer.trigger(conversationId, 'messages:update', updatedMessage);
+
+        const lastMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
+
+        updatedConversation.users.map((user) => {
+            pusherServer.trigger(user.email!, 'conversation:update', {
+                id: conversationId,
+                messages: [lastMessage],
+            });
+        });
+        return NextResponse.json(updatedMessage, { status: 200 })
+    } catch (error: any) {
+        console.error(error?.message)
+        return NextResponse.json('Failed to update message', { status: 500 })
+    }
+
 }
