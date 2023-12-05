@@ -108,3 +108,8 @@ export const DELETE = async (request: NextRequest) => {
 
     }
 }
+
+export const PATCH = async (request: NextRequest) => {
+    const body = await request.json();
+    const currentUser = await getCurrentUser();
+}

@@ -87,6 +87,8 @@ const MessageBox = ({ data, isLast }: MessageBoxProps) => {
                         <EditModal
                             isOpen={editModalOpen}
                             onClose={() => setEditModalOpen(false)}
+                            message={data.body}
+                            messageId={data.id}
                         />
                         <ConfirmModal
                             variant="message"
