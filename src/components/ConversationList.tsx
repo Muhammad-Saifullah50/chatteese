@@ -42,19 +42,19 @@ const ConversationList = ({ initalItems, users }: ConversationListProps) => {
       })
     };
 
-    const updateHandler = (conversation: FullConversationType) => {
-      setItems((current) =>
-        current.map((currentConversation) => {
-          if (currentConversation.id === conversation.id) {
-            return {
-              ...currentConversation,
-              messages: conversation.messages
-            };
-          }
-          return currentConversation;
-        })
-      );
-    };
+    // const updateHandler = (conversation: FullConversationType) => {
+    //   setItems((current) =>
+    //     current.map((currentConversation) => {
+    //       if (currentConversation.id === conversation.id) {
+    //         return {
+    //           ...currentConversation,
+    //           messages: conversation.messages
+    //         };
+    //       }
+    //       return currentConversation;
+    //     })
+    //   );
+    // };
 
     const removeHandler = (conversation: FullConversationType) => {
       setItems((current) => {
@@ -62,14 +62,14 @@ const ConversationList = ({ initalItems, users }: ConversationListProps) => {
       })
     }
     pusherClient.bind('conversation:new', newhandler)
-    pusherClient.bind('conversation:update', updateHandler)
+    // pusherClient.bind('conversation:update', updateHandler)
     pusherClient.bind('conversation:remove', removeHandler)
 
 
     return () => {
       pusherClient.unsubscribe(pusherKey)
       pusherClient.unbind('conversation:new', newhandler)
-      pusherClient.unbind('conversation:update', updateHandler)
+      // pusherClient.unbind('conversation:update', updateHandler)
       pusherClient.unbind('conversation:remove', removeHandler)
     }
 
