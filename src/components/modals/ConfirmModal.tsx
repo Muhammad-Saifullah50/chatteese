@@ -50,7 +50,7 @@ const ConfirmModal = ({ isOpen, onClose, variant, messageId }: ConfirmModalProps
         } finally {
             setLoading(false)
         }
-    }, [conversationId, messageId, router, onClose])
+    }, [conversationId, messageId, router, onClose, variant])
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <div className="sm:flex sm:items-start">
