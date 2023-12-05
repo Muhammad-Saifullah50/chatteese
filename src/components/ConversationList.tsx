@@ -74,6 +74,7 @@ const ConversationList = ({ initalItems, users }: ConversationListProps) => {
     }
 
   }, [pusherKey])
+  console.log(items, 'items');
   return (<>
     <GroupChatModal
       users={users}
