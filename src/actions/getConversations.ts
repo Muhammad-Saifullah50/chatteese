@@ -1,14 +1,16 @@
-import getCurrentUser from "./getCurrentUser";
 
+import getCurrentUser from "./getCurrentUser";
+import prisma from '@/lib/prisma';
 const getConversations = async () => {
     const currentUser = await getCurrentUser();
+    console.log(currentUser)
 
     if (!currentUser) {
         return []
     }
 
     try {
-        const conversations = await prisma?.conversation.findMany({
+        const conversations = await prisma.conversation.findMany({
             orderBy: {
                 lastMessageAt: 'desc'
             },
@@ -30,6 +32,7 @@ const getConversations = async () => {
 
         return conversations
     } catch (error: any) {
+        console.log(error?.message)
         return []
     }
 }
